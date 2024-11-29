@@ -75,6 +75,7 @@ const StudentSchedule = () => {
 
   return (
     <Box sx={{ p: 3, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        
       {/* Student Selection Dropdown */}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
