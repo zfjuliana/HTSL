@@ -57,7 +57,7 @@ export const exams = ${JSON.stringify(data.exams, null, 2)};
       return res.status(200).json({ message: 'Exam added successfully', newExam });
     } catch (error) {
       console.error('Error updating data file:', error);
-      return res.status(500).json({ message: 'Failed to update data' });
+      return res.status(500).json({ message: 'Failed to update data'});
     }
   } else {
     return res.status(405).json({ message: 'Method not allowed' });
