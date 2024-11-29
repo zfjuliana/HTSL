@@ -16,6 +16,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import ExamSchedulerForm from '@/components/Form';
 import { useRouter } from 'next/router';
 import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack } from '@mui/icons-material';
 
 const ProfessorSchedule = () => {
   const router = useRouter();

@@ -15,8 +15,6 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import AlertSnackbar from '@/components/alertSnackBar'; // Snackbar for conflict alerts
-import { useRouter } from 'next/router';
-import { ArrowBack } from '@mui/icons-material';
 
 const StudentSchedule = () => {
   const router = useRouter();
@@ -129,17 +127,8 @@ const StudentSchedule = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-       {/* Back Button */}
-       <button
-        type="button"
-        onClick={() => router.back()}
-        className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
-      >
-        <ArrowBack className="mr-2" />
-        Back
-      </button>
-
+    <Box sx={{ p: 3, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        
       {/* Student Selection Dropdown */}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
@@ -219,6 +208,7 @@ const StudentSchedule = () => {
         />
       </Snackbar>
     </Box>
+    
   );
 };
 
