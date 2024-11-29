@@ -37,18 +37,18 @@ const Landing: React.FC = () => {
                   <button
                     type="button"
                     className="text-white font-semibold border border-2 bg-gray-800 hover:bg-blue-800 rounded-2xl text-2xl px-9 py-3 md:px-12 md:py-3 me-2 mb-2"
-                    onClick={() => router.push("/signup")}
+                    onClick={() => router.push("/professorSchedule")}
                   >
-                    Signup
+                    Professor
                   </button>
                 </div>
                 <div className="Button-secondary">
                   <button
                     type="button"
                     className="text-black font-semibold border border-2 hover:bg-gray-200 rounded-2xl text-2xl px-9 md:px-12 py-3 me-2 mb-2"
-                    onClick={() => router.push("/login")}
+                    onClick={() => router.push("/studentSchedule")}
                   >
-                    Login
+                    Student
                   </button>
                 </div>
               </div>
