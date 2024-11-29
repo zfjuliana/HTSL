@@ -8,7 +8,7 @@ import AlertSnackbar from '@/components/alertSnackBar';
 //  For the admin (or a departmental coordinator) to oversee the creation and 
 // optimization of the entire exam schedule, ensuring that conflicts are minimized.
 
-const ScheduleCreator = () => {
+const ScheduleCreator = () => { 
   const [exams, setExams] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [alert, setAlert] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({

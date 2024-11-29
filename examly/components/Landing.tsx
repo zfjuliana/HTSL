@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faTimes, faSearch, faFile, faCode } from "@fortawesome/free-solid-svg-icons";
+import { Timeline } from "@mui/icons-material";
 
 const Landing: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,12 +13,13 @@ const Landing: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-lightBlue-300 via-lightBlue-400 to-lightBlue-500 min-h-screen w-full h-full overflow-x-hidden">
+    <div className="bg-gradient-to-r from-blue-100 via-blue-200 min-h-screen w-full h-full overflow-x-hidden">
       <div className="flex items-center justify-start px-6 md:px-12 pt-24 max-w-screen-xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] grid-rows-[0.3fr_0.8fr_0.7fr_1fr] md:grid-rows-[0.3fr_0.8fr_1fr_1.5fr] tracking-tighter mt-10 md:mt-0 -ml-2 md:-ml-0">
           {/* Title */}
-          <div className="row-span-1 flex justify-start items-end text-blue-800">
+          <div className="flex justify-start items-end text-blue-800">
             <div>
+              <Timeline sx={{ width: 80, height: 80 }}/>
               <h1 className="text-9xl font-bold">Examly</h1>
             </div>
           </div>
@@ -37,18 +39,18 @@ const Landing: React.FC = () => {
                   <button
                     type="button"
                     className="text-white font-semibold border border-2 bg-gray-800 hover:bg-blue-800 rounded-2xl text-2xl px-9 py-3 md:px-12 md:py-3 me-2 mb-2"
-                    onClick={() => router.push("/signup")}
+                    onClick={() => router.push("/professorSchedule")}
                   >
-                    Signup
+                    Professor
                   </button>
                 </div>
                 <div className="Button-secondary">
                   <button
                     type="button"
-                    className="text-black font-semibold border border-2 hover:bg-gray-200 rounded-2xl text-2xl px-9 md:px-12 py-3 me-2 mb-2"
-                    onClick={() => router.push("/login")}
+                    className="text-black bg-white font-semibold border border-2 hover:bg-gray-200 rounded-2xl text-2xl px-9 md:px-12 py-3 me-2 mb-2"
+                    onClick={() => router.push("/studentSchedule")}
                   >
-                    Login
+                    Student
                   </button>
                 </div>
               </div>

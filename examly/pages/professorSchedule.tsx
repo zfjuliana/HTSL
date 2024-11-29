@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Snackbar, Alert, Modal, Grid, Typography } from '@mui/material';
-import CalendarView from '@/components/calenderView';
+import { Box, Button, TextField, Snackbar, Alert, Modal, Grid, Typography, Paper } from '@mui/material';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import AlertSnackbar from '@/components/alertSnackBar'; // Snackbar for conflict alerts
+import ExamSchedulerForm from '@/components/Form';
 
 const ProfessorSchedule = () => {
-  const [events, setEvents] = useState<any[]>([]);
-  const [rooms, setRooms] = useState<string[]>([]);
+  const [events, setEvents] = useState<any[]>([
+    { title: 'Exam 1', start: new Date('2024-12-01T09:00:00'), end: new Date('2024-12-01T11:00:00'), room: 'Room 101' },
+    { title: 'Exam 2', start: new Date('2024-12-01T13:00:00'), end: new Date('2024-12-01T15:00:00'), room: 'Room 202' },
+  ]);
+  const [rooms, setRooms] = useState<string[]>(['Room 101', 'Room 202', 'Room 303']);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
   const [conflictAlert, setConflictAlert] = useState<{ open: boolean; message: string }>({
@@ -12,28 +19,6 @@ const ProfessorSchedule = () => {
     message: '',
   });
   const [openModal, setOpenModal] = useState(false);
-
-  // Fetch rooms and events when component loads
-  useEffect(() => {
-    const fetchRoomsAndEvents = async () => {
-      try {
-        // Fetch rooms
-        const roomResponse = await fetch('/api/rooms');
-        if (!roomResponse.ok) throw new Error('Failed to fetch rooms');
-        const roomData = await roomResponse.json();
-        setRooms(roomData.rooms);
-
-        // Fetch existing events
-        const eventResponse = await fetch('/api/events');
-        if (!eventResponse.ok) throw new Error('Failed to fetch events');
-        const eventData = await eventResponse.json();
-        setEvents(eventData.events);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchRoomsAndEvents();
-  }, []);
 
   // Check for conflicts between events
   const checkForConflicts = (newEvent: any) => {
@@ -68,32 +53,40 @@ const ProfessorSchedule = () => {
     if (checkForConflicts(newEvent)) {
       setConflictAlert({ open: true, message: 'Conflict detected: Room already booked!' });
     } else {
-      try {
-        const response = await fetch('/api/events', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newEvent),
-        });
-        if (!response.ok) throw new Error('Failed to save event');
-        const savedEvent = await response.json();
-        setEvents([...events, savedEvent]); // Add new event to the calendar
-        setOpenModal(false);
-        setConflictAlert({ open: true, message: 'Exam successfully scheduled!' });
-      } catch (error) {
-        console.error('Error saving event:', error);
-        setConflictAlert({ open: true, message: 'Failed to schedule the exam.' });
-      }
+      setEvents([...events, newEvent]); // Add new event to the calendar
+      setOpenModal(false);
+      setConflictAlert({ open: true, message: 'Exam successfully scheduled!' });
     }
   };
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" mb={3}>
+      <ExamSchedulerForm />
+
+      <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold', marginTop: '70px', marginBottom: '50px'}}>
         Professor Exam Scheduling
       </Typography>
-
-      {/* Calendar View */}
-      <CalendarView events={events} onSelectSlot={handleSlotSelect} />
+      
+      {/* FullCalendar to display exams */}
+      <Paper sx={{ flex: 1, overflow: 'hidden', borderRadius: 2, boxShadow: 3 }}>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin]}
+          initialView="dayGridMonth"
+          events={events.map((exam) => ({
+            title: `${exam.course} Exam`,
+            start: exam.date,
+            end: new Date(exam.date).setHours(new Date(exam.date).getHours() + exam.duration),
+            description: exam.room,
+            color: 'blue', // Default color for non-conflicting exams
+          }))}
+          eventClick={(info) => window.alert(`Exam Details: ${info.event.title}`)}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+        />
+      </Paper>
 
       {/* Modal for confirming booking */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
