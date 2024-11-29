@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Snackbar, Alert, Modal, Grid, Typography } from '@mui/material';
-import CalendarView from '@/components/calenderView';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import AlertSnackbar from '@/components/alertSnackBar'; // Snackbar for conflict alerts
+import ExamSchedulerForm from '@/components/Form';
 
 const ProfessorSchedule = () => {
   const [events, setEvents] = useState<any[]>([
@@ -57,12 +61,31 @@ const ProfessorSchedule = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      <ExamSchedulerForm />
       <Typography variant="h4" mb={3}>
         Professor Exam Scheduling
       </Typography>
-
-      {/* Calendar View */}
-      <CalendarView events={events} onSelectSlot={handleSlotSelect} />
+      
+      {/* FullCalendar to display exams */}
+      <Paper sx={{ flex: 1, overflow: 'hidden', borderRadius: 2, boxShadow: 3 }}>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin]}
+          initialView="dayGridMonth"
+          events={exams.map((exam) => ({
+            title: `${exam.course} Exam`,
+            start: exam.date,
+            end: new Date(exam.date).setHours(new Date(exam.date).getHours() + exam.duration),
+            description: exam.room,
+            color: 'blue', // Default color for non-conflicting exams
+          }))}
+          eventClick={(info) => window.alert(`Exam Details: ${info.event.title}`)}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+        />
+      </Paper>
 
       {/* Modal for confirming booking */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
