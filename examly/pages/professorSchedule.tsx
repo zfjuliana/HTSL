@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Box, Snackbar, Alert, Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
+import {
+  Button,
+  Box,
+  Snackbar,
+  Alert,
+  Typography,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import ExamSchedulerForm from '@/components/Form';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 const ProfessorSchedule = () => {
-    const router = useRouter();
-  const [events, setEvents] = useState<any[]>([
-    { title: 'Exam 1', start: new Date('2024-12-01T09:00:00'), end: new Date('2024-12-01T11:00:00'), room: 'Room 101' },
-    { title: 'Exam 2', start: new Date('2024-12-01T13:00:00'), end: new Date('2024-12-01T15:00:00'), room: 'Room 202' },
-  ]);
-  const [rooms, setRooms] = useState<string[]>(['Room 101', 'Room 202', 'Room 303']);
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
-  const [selectedRoom, setSelectedRoom] = useState<string>('');
+  const router = useRouter();
+  const [events, setEvents] = useState<any[]>([]);
   const [conflictAlert, setConflictAlert] = useState<{ open: boolean; message: string }>({
     open: false,
     message: '',
@@ -34,20 +38,25 @@ const ProfessorSchedule = () => {
       setConflictAlert({ open: true, message: 'Failed to load scheduled exams.' });
     }
   };
-  
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchScheduledExams();
+  }, []);
+
   const handleBackClick = () => {
     router.push('/'); // Navigate back to the Landing page
   };
 
   return (
     <Box sx={{ p: 3 }}>
-        {/* Back Button */}
-      <Button 
-       className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
+      {/* Back Button */}
+      <Button
+        className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
         onClick={handleBackClick}
         sx={{ marginBottom: 2 }}
       >
-        Back 
+        Back
       </Button>
 
       <ExamSchedulerForm />
@@ -67,16 +76,16 @@ const ProfessorSchedule = () => {
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView="dayGridMonth"
           events={events.map((exam) => ({
-            title: exam.title,
+            title: `${exam.courseName || exam.examId || exam.id} Exam`,
             start: new Date(exam.assignedTimeSlot),
             end: new Date(new Date(exam.assignedTimeSlot).getTime() + 2 * 60 * 60 * 1000),
             description: exam.assignedRoom,
             color: 'blue', // Default color for exams
           }))}
-          
-          
           eventClick={(info) =>
-            window.alert(`Exam Details:\n${info.event.title}\nRoom: ${info.event.extendedProps.description}`)
+            window.alert(
+              `Exam Details:\n${info.event.title}\nRoom: ${info.event.extendedProps.description}`
+            )
           }
           headerToolbar={{
             left: 'prev,next today',
@@ -95,7 +104,7 @@ const ProfessorSchedule = () => {
           {events.map((exam, index) => (
             <ListItem key={index} divider>
               <ListItemText
-                primary={`Exam ID: ${exam.examId}`}
+                primary={`Exam: ${exam.courseName || exam.examId || exam.id}`}
                 secondary={
                   <>
                     <Typography component="span" variant="body2" color="text.primary">
