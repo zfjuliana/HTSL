@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Snackbar, Alert, Modal, Grid, Typography } from '@mui/material';
+import { Box, Button, TextField, Snackbar, Alert, Modal, Grid, Typography, Paper } from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -62,7 +62,8 @@ const ProfessorSchedule = () => {
   return (
     <Box sx={{ p: 3 }}>
       <ExamSchedulerForm />
-      <Typography variant="h4" mb={3}>
+
+      <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold', marginTop: '70px', marginBottom: '50px'}}>
         Professor Exam Scheduling
       </Typography>
       
@@ -71,7 +72,7 @@ const ProfessorSchedule = () => {
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView="dayGridMonth"
-          events={exams.map((exam) => ({
+          events={events.map((exam) => ({
             title: `${exam.course} Exam`,
             start: exam.date,
             end: new Date(exam.date).setHours(new Date(exam.date).getHours() + exam.duration),
