@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Snackbar, Paper } from '@mui/material';
+import { Box, Typography, Snackbar, Paper, Select, MenuItem, InputLabel, FormControl, Grid, SelectChangeEvent } from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import AlertSnackbar from '@/components/alertSnackBar'; // Snackbar for conflict alerts
 
 const StudentSchedule = () => {
-  const [exams, setExams] = useState<any[]>([
-    { course: 'CS101', date: new Date('2024-11-03T09:00:00'), duration: 2, room: 'Room 101' },
-    { course: 'CS102', date: new Date('2024-11-04T11:00:00'), duration: 2, room: 'Room 202' },
-    { course: 'CS103', date: new Date('2024-11-05T13:00:00'), duration: 2, room: 'Room 101' },
-    { course: 'CS104', date: new Date('2024-11-06T14:00:00'), duration: 2, room: 'Room 202' },
-  ]);
+  // Simulated student data
+  const studentsData = [
+    { id: 1, name: 'John Doe', exams: [
+      { course: 'CS101', date: new Date('2024-11-03T09:00:00'), duration: 2, room: 'Room 101' },
+      { course: 'CS102', date: new Date('2024-11-04T11:00:00'), duration: 2, room: 'Room 202' },
+    ] },
+    { id: 2, name: 'Jane Smith', exams: [
+      { course: 'CS103', date: new Date('2024-11-05T13:00:00'), duration: 2, room: 'Room 101' },
+      { course: 'CS104', date: new Date('2024-11-06T14:00:00'), duration: 2, room: 'Room 202' },
+    ] },
+  ];
+
+  const [selectedStudent, setSelectedStudent] = useState(studentsData[0]); // Default to the first student
+  const [exams, setExams] = useState<any[]>(selectedStudent.exams);
   const [conflictAlert, setConflictAlert] = useState<{
     open: boolean;
     message: string;
@@ -21,6 +29,15 @@ const StudentSchedule = () => {
     message: '',
     severity: 'success',
   });
+
+  // Handle student selection change
+  const handleStudentChange = (event: SelectChangeEvent<number>) => {
+    const student = studentsData.find(s => s.id === event.target.value);
+    if (student) {
+      setSelectedStudent(student);
+      setExams(student.exams); // Update the exams based on selected student
+    }
+  };
 
   // Function to detect schedule conflicts
   const detectConflicts = (exams: any[]) => {
@@ -58,12 +75,36 @@ const StudentSchedule = () => {
 
   return (
     <Box sx={{ p: 3, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Student Selection Dropdown */}
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h5" component="h2" color="primary" sx={{ fontWeight: 'bold', mb: 2, marginTop: '60px'}}>
+            Select Student
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="student-select-label">Student</InputLabel>
+            <Select
+              labelId="student-select-label"
+              value={selectedStudent.id}
+              onChange={handleStudentChange}
+              label="Student"
+              sx={{ minWidth: 200 }}
+            >
+              {studentsData.map((student) => (
+                <MenuItem key={student.id} value={student.id}>
+                  {student.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
       {/* Title */}
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold' }}>
-          Your Midterm Exam Schedule
+        <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold', marginTop: '60px' }}>
+          {selectedStudent.name}'s Midterm Exam Schedule
         </Typography>
-       
       </Box>
 
       {/* FullCalendar to display exams */}
