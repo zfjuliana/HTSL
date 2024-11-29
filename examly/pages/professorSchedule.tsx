@@ -15,6 +15,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import ExamSchedulerForm from '@/components/Form';
 import { useRouter } from 'next/router';
+import { ArrowBack } from '@mui/icons-material';
 
 const ProfessorSchedule = () => {
   const router = useRouter();
@@ -51,13 +52,14 @@ const ProfessorSchedule = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Back Button */}
-      <Button
+       <button
+        type="button"
+        onClick={() => router.back()}
         className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
-        onClick={handleBackClick}
-        sx={{ marginBottom: 2 }}
       >
+        <ArrowBack className="mr-2" />
         Back
-      </Button>
+      </button>
 
       <ExamSchedulerForm />
 
@@ -75,6 +77,8 @@ const ProfessorSchedule = () => {
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView="dayGridMonth"
+          initialDate="2024-01-01"
+
           events={events.map((exam) => ({
             title: `${exam.courseName || exam.examId || exam.id} Exam`,
             start: new Date(exam.assignedTimeSlot),

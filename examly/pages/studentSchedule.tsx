@@ -1,11 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Snackbar, Paper, Select, MenuItem, InputLabel, FormControl, Grid, SelectChangeEvent } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Snackbar,
+  Paper,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Grid,
+  SelectChangeEvent,
+} from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import AlertSnackbar from '@/components/alertSnackBar'; // Snackbar for conflict alerts
+import { useRouter } from 'next/router';
+import { ArrowBack } from '@mui/icons-material';
 
 const StudentSchedule = () => {
+  const router = useRouter();
+  // Sample students data
+  const studentsData = [
+    { id: 'student1', name: 'Student 1' },
+    { id: 'student2', name: 'Student 2' },
+    { id: 'student3', name: 'Student 3' },
+    { id: 'student4', name: 'Student 4' },
+    { id: 'student5', name: 'Student 5' },
+    // ... add more students as needed
+  ];
+
+  // State to hold the selected student
+  const [selectedStudent, setSelectedStudent] = useState<{ id: string; name: string }>(studentsData[0]);
+
   const [exams, setExams] = useState<any[]>([]); // Initialize as an empty array
   const [conflictAlert, setConflictAlert] = useState<{
     open: boolean;
@@ -18,11 +45,11 @@ const StudentSchedule = () => {
   });
 
   // Handle student selection change
-  const handleStudentChange = (event: SelectChangeEvent<number>) => {
-    const student = studentsData.find(s => s.id === event.target.value);
+  const handleStudentChange = (event: SelectChangeEvent<string>) => {
+    const studentId = event.target.value;
+    const student = studentsData.find((s) => s.id === studentId);
     if (student) {
       setSelectedStudent(student);
-      setExams(student.exams); // Update the exams based on selected student
     }
   };
 
@@ -36,7 +63,7 @@ const StudentSchedule = () => {
         const start2 = new Date(exams[j].date).getTime();
         const end2 = start2 + exams[j].duration * 60 * 60 * 1000;
 
-        if (start1 < end2 && end1 > start2 && exams[i].room === exams[j].room) {
+        if (start1 < end2 && end1 > start2) {
           conflicts.push([exams[i], exams[j]]);
         }
       }
@@ -45,23 +72,23 @@ const StudentSchedule = () => {
   };
 
   // Fetch timetable data from the API
-  const fetchExamData = async () => {
+  const fetchExamData = async (studentId: string) => {
     try {
       console.log('Fetching timetable data from API.');
-      const response = await fetch('/api/get-exams'); // Updated API endpoint
+      const response = await fetch(`/api/student-events?studentId=${studentId}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch exams: ${response.statusText}`);
       }
       const data = await response.json();
 
-      // Extract and transform the data for the current student (replace 'student1' with the actual student ID)
-      const studentId = 'student1'; // Replace with actual student ID or fetch from context/auth
-      const studentTimetable = data.studentTimetables[studentId] || [];
-      const transformedExams = studentTimetable.map((exam: any) => ({
-        course: exam.examId,
-        date: new Date(exam.timeSlot),
-        duration: 2, // Assuming a default duration of 2 hours (update as needed)
-        room: exam.roomId,
+      // Extract and transform the data for the selected student
+      const studentExams = data.scheduledEvents || [];
+      const transformedExams = studentExams.map((exam: any) => ({
+        course: exam.title.replace('Exam: ', ''), // Assuming the title is like "Exam: CourseName"
+        date: new Date(exam.start),
+        duration:
+          (new Date(exam.end).getTime() - new Date(exam.start).getTime()) / (60 * 60 * 1000), // Duration in hours
+        room: exam.room,
       }));
 
       setExams(transformedExams);
@@ -75,10 +102,12 @@ const StudentSchedule = () => {
     }
   };
 
-  // Fetch data on component mount
+  // Fetch data whenever the selected student changes
   useEffect(() => {
-    fetchExamData();
-  }, []); // Run only once when the component mounts
+    if (selectedStudent && selectedStudent.id) {
+      fetchExamData(selectedStudent.id);
+    }
+  }, [selectedStudent]);
 
   // Detect conflicts whenever exams state changes
   useEffect(() => {
@@ -100,12 +129,26 @@ const StudentSchedule = () => {
   };
 
   return (
-    <Box sx={{ p: 3, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        
+    <Box sx={{ p: 3 }}>
+       {/* Back Button */}
+       <button
+        type="button"
+        onClick={() => router.back()}
+        className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
+      >
+        <ArrowBack className="mr-2" />
+        Back
+      </button>
+
       {/* Student Selection Dropdown */}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <Typography variant="h5" component="h2" color="primary" sx={{ fontWeight: 'bold', mb: 2, marginTop: '60px'}}>
+          <Typography
+            variant="h5"
+            component="h2"
+            color="primary"
+            sx={{ fontWeight: 'bold', mb: 2, marginTop: '60px' }}
+          >
             Select Student
           </Typography>
           <FormControl fullWidth>
@@ -129,7 +172,12 @@ const StudentSchedule = () => {
 
       {/* Title */}
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold', marginTop: '60px' }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          color="primary"
+          sx={{ fontWeight: 'bold', marginTop: '60px' }}
+        >
           {selectedStudent.name}'s Midterm Exam Schedule
         </Typography>
       </Box>
@@ -139,6 +187,7 @@ const StudentSchedule = () => {
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView="dayGridMonth"
+          initialDate="2024-01-01"
           events={exams.map((exam) => ({
             title: `${exam.course} Exam`,
             start: exam.date,

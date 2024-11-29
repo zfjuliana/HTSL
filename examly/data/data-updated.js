@@ -1,0 +1,162 @@
+export const rooms = [
+    { id: 'room1', capacity: 200 },
+    { id: 'room2', capacity: 75 },
+    { id: 'room3', capacity: 150 },
+    { id: 'room4', capacity: 200 },
+    { id: 'room5', capacity: 75 },
+    { id: 'room6', capacity: 150 },
+    { id: 'room7', capacity: 75 },
+    { id: 'room8', capacity: 200 },
+    { id: 'room9', capacity: 100 },
+    { id: 'room10', capacity: 75 },
+];
+
+export const timeSlots = [
+    '2024-01-10 09:00', '2024-01-10 13:00',
+    '2024-01-11 09:00', '2024-01-11 13:00',
+    '2024-01-12 09:00', '2024-01-12 13:00',
+    '2024-01-13 09:00', '2024-01-13 13:00',
+    '2024-01-14 09:00', '2024-01-14 13:00',
+    '2024-01-15 09:00', '2024-01-15 13:00',
+    '2024-01-16 09:00', '2024-01-16 13:00',
+    '2024-01-17 09:00', '2024-01-17 13:00',
+    '2024-01-18 09:00', '2024-01-18 13:00',
+    '2024-01-19 09:00', '2024-01-19 13:00',
+    '2024-01-20 09:00', '2024-01-20 13:00',
+    '2024-01-21 09:00', '2024-01-21 13:00',
+    '2024-01-22 09:00', '2024-01-22 13:00',
+    '2024-01-23 09:00', '2024-01-23 13:00',
+    '2024-01-24 09:00', '2024-01-24 13:00',
+];
+
+export const students = Array.from({ length: 500 }, (_, i) => `student${i + 1}`);
+
+export const studentCourseAssignments = {
+    student1: ['course1', 'course3', 'course5'],
+    student2: ['course2', 'course4', 'course6'],
+    student3: ['course1', 'course4', 'course7'],
+    student4: ['course3', 'course8', 'course10'],
+    student5: ['course2', 'course6', 'course9'],
+    student6: ['course1', 'course5', 'course7'],
+    student7: ['course3', 'course8', 'course10'],
+    student8: ['course2', 'course6', 'course9', 'course11'],
+    student9: ['course1', 'course4', 'course8', 'course11'],
+    student10: ['course5', 'course7', 'course10', 'course11'],
+    // Continue for all 500 students
+};
+
+export const exams = [
+    {
+        id: 'Course 11 Midter',
+        course: 'course11',
+        possibleRooms: ['room1', 'room3', 'room4'],
+        possibleTimeSlots: ['2024-01-22 09:00', '2024-01-15 09:00'],
+        enrolledStudents: ['student8', 'student9', 'student10'],
+    },
+    {
+        id: 'exam1',
+        course: 'course1',
+        possibleRooms: ['room1', 'room3', 'room4'],
+        possibleTimeSlots: ['2024-01-22 09:00', '2024-01-15 09:00'],
+        enrolledStudents: ['student1', 'student3', 'student6', 'student9'],
+    },
+    {
+        id: 'exam2',
+        course: 'course2',
+        possibleRooms: ['room2', 'room5'],
+        possibleTimeSlots: ['2024-01-14 13:00', '2024-01-19 13:00'],
+        enrolledStudents: ['student2', 'student5', 'student8', 'student10'],
+    },
+    {
+        id: 'exam3',
+        course: 'course3',
+        possibleRooms: ['room6', 'room8'],
+        possibleTimeSlots: ['2024-01-18 09:00', '2024-01-20 13:00'],
+        enrolledStudents: ['student1', 'student4', 'student7'],
+    },
+    {
+        id: 'exam4',
+        course: 'course4',
+        possibleRooms: ['room9', 'room10'],
+        possibleTimeSlots: ['2024-01-13 09:00', '2024-01-23 09:00'],
+        enrolledStudents: ['student2', 'student3', 'student9'],
+    },
+    {
+        id: 'exam5',
+        course: 'course5',
+        possibleRooms: ['room1', 'room4', 'room7'],
+        possibleTimeSlots: ['2024-01-12 13:00', '2024-01-16 09:00'],
+        enrolledStudents: ['student1', 'student6', 'student10'],
+    },
+    {
+        id: 'exam6',
+        course: 'course6',
+        possibleRooms: ['room3', 'room8'],
+        possibleTimeSlots: ['2024-01-14 09:00', '2024-01-24 13:00'],
+        enrolledStudents: ['student2', 'student5', 'student8'],
+    },
+    {
+        id: 'exam7',
+        course: 'course7',
+        possibleRooms: ['room5', 'room6'],
+        possibleTimeSlots: ['2024-01-11 13:00', '2024-01-17 09:00'],
+        enrolledStudents: ['student3', 'student6', 'student10'],
+    },
+    {
+        id: 'exam8',
+        course: 'course8',
+        possibleRooms: ['room2', 'room9'],
+        possibleTimeSlots: ['2024-01-21 09:00', '2024-01-22 13:00'],
+        enrolledStudents: ['student4', 'student7', 'student9'],
+    },
+    {
+        id: 'exam9',
+        course: 'course9',
+        possibleRooms: ['room1', 'room7'],
+        possibleTimeSlots: ['2024-01-20 09:00', '2024-01-19 09:00'],
+        enrolledStudents: ['student5', 'student8'],
+    },
+    {
+        id: 'exam10',
+        course: 'course10',
+        possibleRooms: ['room3', 'room10'],
+        possibleTimeSlots: ['2024-01-10 13:00', '2024-01-15 13:00'],
+        enrolledStudents: ['student4', 'student7', 'student10'],
+    },
+    {
+        id: 'exam11',
+        course: 'course11',
+        possibleRooms: ['room4', 'room8'],
+        possibleTimeSlots: ['2024-01-11 09:00', '2024-01-18 13:00'],
+        enrolledStudents: ['student11', 'student12', 'student13'],
+    },
+    {
+        id: 'exam12',
+        course: 'course12',
+        possibleRooms: ['room6', 'room7'],
+        possibleTimeSlots: ['2024-01-16 13:00', '2024-01-20 13:00'],
+        enrolledStudents: ['student14', 'student15', 'student16'],
+    },
+    {
+        id: 'exam13',
+        course: 'course13',
+        possibleRooms: ['room1', 'room5'],
+        possibleTimeSlots: ['2024-01-24 09:00', '2024-01-23 13:00'],
+        enrolledStudents: ['student17', 'student18', 'student19'],
+    },
+    {
+        id: 'exam14',
+        course: 'course14',
+        possibleRooms: ['room2', 'room9'],
+        possibleTimeSlots: ['2024-01-14 13:00', '2024-01-21 13:00'],
+        enrolledStudents: ['student20', 'student21', 'student22'],
+    },
+    {
+        id: 'exam15',
+        course: 'course15',
+        possibleRooms: ['room8', 'room10'],
+        possibleTimeSlots: ['2024-01-13 09:00', '2024-01-18 13:00'],
+        enrolledStudents: ['student23', 'student24', 'student25'],
+    },
+    // Add remaining exams as needed
+];
