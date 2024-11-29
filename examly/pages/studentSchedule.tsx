@@ -8,21 +8,7 @@ import { useRouter } from "next/router";
 import { ArrowBack } from '@mui/icons-material';
 
 const StudentSchedule = () => {
-    const router = useRouter();
-  // Simulated student data
-  const studentsData = [
-    { id: 1, name: 'John Doe', exams: [
-      { course: 'CS101', date: new Date('2024-11-03T09:00:00'), duration: 2, room: 'Room 101' },
-      { course: 'CS102', date: new Date('2024-11-04T11:00:00'), duration: 2, room: 'Room 202' },
-    ] },
-    { id: 2, name: 'Jane Smith', exams: [
-      { course: 'CS103', date: new Date('2024-11-05T13:00:00'), duration: 2, room: 'Room 101' },
-      { course: 'CS104', date: new Date('2024-11-06T14:00:00'), duration: 2, room: 'Room 202' },
-    ] },
-  ];
-
-  const [selectedStudent, setSelectedStudent] = useState(studentsData[0]); // Default to the first student
-  const [exams, setExams] = useState<any[]>(selectedStudent.exams);
+  const [exams, setExams] = useState<any[]>([]); // Initialize as an empty array
   const [conflictAlert, setConflictAlert] = useState<{
     open: boolean;
     message: string;
@@ -47,11 +33,12 @@ const StudentSchedule = () => {
     const conflicts: any[] = [];
     for (let i = 0; i < exams.length; i++) {
       for (let j = i + 1; j < exams.length; j++) {
-        if (
-          exams[i].date < exams[j].date + exams[j].duration * 60 * 1000 &&
-          exams[i].date + exams[i].duration * 60 * 1000 > exams[j].date &&
-          exams[i].room !== exams[j].room
-        ) {
+        const start1 = new Date(exams[i].date).getTime();
+        const end1 = start1 + exams[i].duration * 60 * 60 * 1000;
+        const start2 = new Date(exams[j].date).getTime();
+        const end2 = start2 + exams[j].duration * 60 * 60 * 1000;
+
+        if (start1 < end2 && end1 > start2 && exams[i].room === exams[j].room) {
           conflicts.push([exams[i], exams[j]]);
         }
       }
@@ -59,17 +46,55 @@ const StudentSchedule = () => {
     return conflicts;
   };
 
-  // Handle conflicts and show alerts
-  useEffect(() => {
-    const conflicts = detectConflicts(exams);
-    if (conflicts.length > 0) {
+  // Fetch timetable data from the API
+  const fetchExamData = async () => {
+    try {
+      console.log('Fetching timetable data from API.');
+      const response = await fetch('/api/get-exams'); // Updated API endpoint
+      if (!response.ok) {
+        throw new Error(`Failed to fetch exams: ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      // Extract and transform the data for the current student (replace 'student1' with the actual student ID)
+      const studentId = 'student1'; // Replace with actual student ID or fetch from context/auth
+      const studentTimetable = data.studentTimetables[studentId] || [];
+      const transformedExams = studentTimetable.map((exam: any) => ({
+        course: exam.examId,
+        date: new Date(exam.timeSlot),
+        duration: 2, // Assuming a default duration of 2 hours (update as needed)
+        room: exam.roomId,
+      }));
+
+      setExams(transformedExams);
+    } catch (error) {
+      console.error('Error fetching exams:', error);
       setConflictAlert({
         open: true,
-        message: `Conflict detected: ${conflicts.length} overlapping exams!`,
-        severity: 'error', // Set severity to 'error' for conflicts
+        message: 'Failed to load exam schedule.',
+        severity: 'error',
       });
     }
-  }, [exams]); // Dependency on exams to trigger when exams change
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchExamData();
+  }, []); // Run only once when the component mounts
+
+  // Detect conflicts whenever exams state changes
+  useEffect(() => {
+    if (exams.length > 0) {
+      const conflicts = detectConflicts(exams);
+      if (conflicts.length > 0) {
+        setConflictAlert({
+          open: true,
+          message: `Conflict detected: ${conflicts.length} overlapping exams!`,
+          severity: 'error',
+        });
+      }
+    }
+  }, [exams]);
 
   // Function to close the Snackbar
   const handleCloseAlert = () => {
@@ -129,7 +154,7 @@ const StudentSchedule = () => {
           events={exams.map((exam) => ({
             title: `${exam.course} Exam`,
             start: exam.date,
-            end: new Date(exam.date).setHours(new Date(exam.date).getHours() + exam.duration),
+            end: new Date(exam.date.getTime() + exam.duration * 60 * 60 * 1000),
             description: exam.room,
             color: 'blue', // Default color for non-conflicting exams
           }))}
