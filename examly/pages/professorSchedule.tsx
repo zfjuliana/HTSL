@@ -3,8 +3,11 @@ import { Box, Button, TextField, Snackbar, Alert, Modal, Grid, Typography } from
 import CalendarView from '@/components/calenderView';
 
 const ProfessorSchedule = () => {
-  const [events, setEvents] = useState<any[]>([]);
-  const [rooms, setRooms] = useState<string[]>([]);
+  const [events, setEvents] = useState<any[]>([
+    { title: 'Exam 1', start: new Date('2024-12-01T09:00:00'), end: new Date('2024-12-01T11:00:00'), room: 'Room 101' },
+    { title: 'Exam 2', start: new Date('2024-12-01T13:00:00'), end: new Date('2024-12-01T15:00:00'), room: 'Room 202' },
+  ]);
+  const [rooms, setRooms] = useState<string[]>(['Room 101', 'Room 202', 'Room 303']);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
   const [conflictAlert, setConflictAlert] = useState<{ open: boolean; message: string }>({
@@ -12,28 +15,6 @@ const ProfessorSchedule = () => {
     message: '',
   });
   const [openModal, setOpenModal] = useState(false);
-
-  // Fetch rooms and events when component loads
-  useEffect(() => {
-    const fetchRoomsAndEvents = async () => {
-      try {
-        // Fetch rooms
-        const roomResponse = await fetch('/api/rooms');
-        if (!roomResponse.ok) throw new Error('Failed to fetch rooms');
-        const roomData = await roomResponse.json();
-        setRooms(roomData.rooms);
-
-        // Fetch existing events
-        const eventResponse = await fetch('/api/events');
-        if (!eventResponse.ok) throw new Error('Failed to fetch events');
-        const eventData = await eventResponse.json();
-        setEvents(eventData.events);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchRoomsAndEvents();
-  }, []);
 
   // Check for conflicts between events
   const checkForConflicts = (newEvent: any) => {
@@ -68,21 +49,9 @@ const ProfessorSchedule = () => {
     if (checkForConflicts(newEvent)) {
       setConflictAlert({ open: true, message: 'Conflict detected: Room already booked!' });
     } else {
-      try {
-        const response = await fetch('/api/events', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newEvent),
-        });
-        if (!response.ok) throw new Error('Failed to save event');
-        const savedEvent = await response.json();
-        setEvents([...events, savedEvent]); // Add new event to the calendar
-        setOpenModal(false);
-        setConflictAlert({ open: true, message: 'Exam successfully scheduled!' });
-      } catch (error) {
-        console.error('Error saving event:', error);
-        setConflictAlert({ open: true, message: 'Failed to schedule the exam.' });
-      }
+      setEvents([...events, newEvent]); // Add new event to the calendar
+      setOpenModal(false);
+      setConflictAlert({ open: true, message: 'Exam successfully scheduled!' });
     }
   };
 
