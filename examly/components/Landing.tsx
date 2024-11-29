@@ -25,7 +25,7 @@ const Landing: React.FC = () => {
           {/* Subtitle */}
           <div className="row-span-1 md:[grid-area:2/1/3/2] mt-10 md:mt-[50px] flex justify-start items-end">
             <h2 className="text-6xl font-medium text-black dark:text-white">
-              Exam scheduling made <span className="font-semibold text-blue-700">Easy</span> and <span className="font-semibold text-blue-700">Smart</span>.
+              We <span className="font-semibold text-blue">eliminate the chaos</span> of exam scheduling.
             </h2>
           </div>
 
