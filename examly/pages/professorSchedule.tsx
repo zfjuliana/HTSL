@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import AlertSnackbar from '@/components/alertSnackBar'; // Snackbar for conflict alerts
 import ExamSchedulerForm from '@/components/Form';
 import { useRouter } from "next/router";
+import { ArrowBack } from '@mui/icons-material';
 
 const ProfessorSchedule = () => {
     const router = useRouter();
@@ -68,15 +69,14 @@ const ProfessorSchedule = () => {
   return (
     <Box sx={{ p: 3 }}>
         {/* Back Button */}
-      <Button 
-       className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
-        onClick={handleBackClick}
-        sx={{ marginBottom: 2 }}
-      >
-        Back 
-      </Button>
-
-      <ExamSchedulerForm />
+        <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center text-sm font-semibold text-blue-600 bg-transparent border border-blue-600 hover:bg-blue-100 rounded-lg px-4 py-2"
+            >
+            <ArrowBack className="mr-2" />
+            Back
+        </button>
 
       <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold', marginTop: '70px', marginBottom: '50px'}}>
         Professor Exam Scheduling
