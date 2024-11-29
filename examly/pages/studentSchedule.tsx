@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Snackbar, Paper } from '@mui/material';
+import { Box, Typography, Snackbar, Paper, Select, MenuItem, InputLabel, FormControl, Grid, SelectChangeEvent } from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -16,6 +16,15 @@ const StudentSchedule = () => {
     message: '',
     severity: 'success',
   });
+
+  // Handle student selection change
+  const handleStudentChange = (event: SelectChangeEvent<number>) => {
+    const student = studentsData.find(s => s.id === event.target.value);
+    if (student) {
+      setSelectedStudent(student);
+      setExams(student.exams); // Update the exams based on selected student
+    }
+  };
 
   // Function to detect schedule conflicts
   const detectConflicts = (exams: any[]) => {
@@ -92,10 +101,36 @@ const StudentSchedule = () => {
 
   return (
     <Box sx={{ p: 3, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        
+      {/* Student Selection Dropdown */}
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h5" component="h2" color="primary" sx={{ fontWeight: 'bold', mb: 2, marginTop: '60px'}}>
+            Select Student
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="student-select-label">Student</InputLabel>
+            <Select
+              labelId="student-select-label"
+              value={selectedStudent.id}
+              onChange={handleStudentChange}
+              label="Student"
+              sx={{ minWidth: 200 }}
+            >
+              {studentsData.map((student) => (
+                <MenuItem key={student.id} value={student.id}>
+                  {student.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
       {/* Title */}
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold' }}>
-          Your Midterm Exam Schedule
+        <Typography variant="h3" component="h1" color="primary" sx={{ fontWeight: 'bold', marginTop: '60px' }}>
+          {selectedStudent.name}'s Midterm Exam Schedule
         </Typography>
       </Box>
 
