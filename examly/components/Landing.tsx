@@ -12,7 +12,7 @@ const Landing: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-lightBlue-300 via-lightBlue-400 to-lightBlue-500 min-h-screen w-full h-full overflow-x-hidden">
+    <div className="bg-gradient-to-r from-blue-100 via-blue-200 min-h-screen w-full h-full overflow-x-hidden">
       <div className="flex items-center justify-start px-6 md:px-12 pt-24 max-w-screen-xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] grid-rows-[0.3fr_0.8fr_0.7fr_1fr] md:grid-rows-[0.3fr_0.8fr_1fr_1.5fr] tracking-tighter mt-10 md:mt-0 -ml-2 md:-ml-0">
           {/* Title */}
@@ -45,7 +45,7 @@ const Landing: React.FC = () => {
                 <div className="Button-secondary">
                   <button
                     type="button"
-                    className="text-black font-semibold border border-2 hover:bg-gray-200 rounded-2xl text-2xl px-9 md:px-12 py-3 me-2 mb-2"
+                    className="text-black bg-white font-semibold border border-2 hover:bg-gray-200 rounded-2xl text-2xl px-9 md:px-12 py-3 me-2 mb-2"
                     onClick={() => router.push("/studentSchedule")}
                   >
                     Student
